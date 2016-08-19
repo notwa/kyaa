@@ -115,4 +115,4 @@ kyaa prints error messages to `stderr`, and help text to `stdout`.
 
 * support `--var=42` argument style
 * rename overlapping things, e.g. `KYAA_FLAG` vs `kyaa_flag`, `KYAA_FLAG_ARG` vs `kyaa_flag_arg`, etc.
-* move `KYAA_FLAG_ARG` to `kyaa_extend.h` or something; write similar macros.
+* move `KYAA_FLAG_LONG` to `kyaa_extend.h` or something; write similar macros.
