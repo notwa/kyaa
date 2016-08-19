@@ -7,15 +7,16 @@ super hacky macro hacks for parsing arguments in C.
 C99 or greater.
 
 standard library headers:
-* errno.h
-* stdbool.h
-* stdio.h
-* string.h
+* `errno.h`
+* `stdbool.h`
+* `stdio.h`
+* `string.h`
+* `stdlib.h`
 
 ## tutorial/API
 
-ensure argc and argv are defined.
-kyaa doesn't actually care if it's in main() or not.
+ensure `argc` and `argv` are defined.
+kyaa doesn't actually care if it's in `main` or not.
 
 iterate over the arguments with `KYAA_LOOP`:
 
