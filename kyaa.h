@@ -21,11 +21,9 @@
         fprintf(stderr, "You've met with a terrible fate.\n"); \
         return KYAA_ERROR; \
     } \
-    /* read-only */ \
     char *kyaa_name = argv[0]; \
     bool kyaa_read_stdin = false; \
     char kyaa_flag = '\0'; \
-    /* internal */ \
     bool kyaa_keep_parsing = true; \
     bool kyaa_parse_next = false; \
 
