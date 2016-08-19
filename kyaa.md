@@ -17,7 +17,7 @@ standard library headers:
 ensure argc and argv are defined.
 kyaa doesn't actually care if it's in main() or not.
 
-iterate over the arguments with KYAA\_LOOP:
+iterate over the arguments with `KYAA_LOOP`:
 
 ```c
 int main(int argc, char *argv[]) {
@@ -29,8 +29,8 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-use KYAA\_BEGIN and KYAA\_END to begin parsing arguments.
-put unrelated code above KYAA\_BEGIN or below KYAA\_END, but not within:
+use `KYAA_BEGIN` and `KYAA_END` to begin parsing arguments.
+put unrelated code above `KYAA_BEGIN` or below `KYAA_END`, but not within:
 
 ```c
     KYAA_LOOP {
@@ -43,8 +43,8 @@ put unrelated code above KYAA\_BEGIN or below KYAA\_END, but not within:
     }
 ```
 
-use KYAA\_FLAG for defining flags that don't take an argument,
-and KYAA\_FLAG\_ARG or KYAA\_FLAG\_LONG for flags that do:
+use `KYAA_FLAG` for defining flags that don't take an argument,
+and `KYAA_FLAG_ARG` or `KYAA_FLAG_LONG` for flags that do:
 
 ```c
     bool use_feature = false;
@@ -78,8 +78,8 @@ and KYAA\_FLAG\_ARG or KYAA\_FLAG\_LONG for flags that do:
 kyaa secretly wraps flag handling in if/else statements with {} blocks.
 do not confuse it for a switch/case method.
 
-kyaa handles -h and --help for printing help text.
-additional help text may be defined using KYAA\_HELP:
+kyaa handles `-h` and `--help` for printing help text.
+additional help text may be defined using `KYAA_HELP`:
 
 ```c
     KYAA_LOOP {
@@ -93,25 +93,25 @@ additional help text may be defined using KYAA\_HELP:
     }
 ```
 
-kyaa interprets an argument of "-" as a request to enable reading from stdin:
-kyaa\_read\_stdin is set to true.
+kyaa interprets an argument of `-` as a request to enable reading from stdin:
+`kyaa_read_stdin` is set to true.
 
 arguments may be passed in three ways, consider:
 * `-v42`
 * `-v 42`
 * `--var 42`
 
-kyaa returns KYAA\_OKAY when -h or --help is given,
-and KYAA\_ERROR in the event of invalid flags, missing arguments,
-or invalid numbers (KYAA\_FLAG\_LONG).
+kyaa returns `KYAA_OKAY` when `-h` or `--help` is given,
+and `KYAA_ERROR` in the event of invalid flags, missing arguments,
+or invalid numbers (`KYAA_FLAG_LONG`).
 kyaa uses continue for handling arguments.
 
-kyaa prints error messages to stderr, and help text to stdout.
+kyaa prints error messages to `stderr`, and help text to `stdout`.
 
-KYAA\_ITER may be redefined to avoid name collisions.
+`KYAA_ITER` may be redefined to avoid name collisions.
 
 ## TODO
 
 * support `--var=42` argument style
-* rename overlapping things, e.g. KYAA\_FLAG vs kyaa\_flag, KYAA\_FLAG\_ARG vs kyaa\_flag\_arg, etc.
-* move KYAA\_FLAG\_ARG to `kyaa_extend.h` or something; write similar macros.
+* rename overlapping things, e.g. `KYAA_FLAG` vs `kyaa_flag`, `KYAA_FLAG_ARG` vs `kyaa_flag_arg`, etc.
+* move `KYAA_FLAG_ARG` to `kyaa_extend.h` or something; write similar macros.
