@@ -105,7 +105,7 @@ arguments may be passed in three ways, consider:
 kyaa returns `KYAA_OKAY` when `-h` or `--help` is given,
 and `KYAA_ERROR` in the event of invalid flags, missing arguments,
 or invalid numbers (`KYAA_FLAG_LONG`).
-kyaa uses continue for handling arguments.
+kyaa uses `continue` for handling arguments.
 
 kyaa prints error messages to `stderr`, and help text to `stdout`.
 
@@ -114,6 +114,7 @@ kyaa prints error messages to `stderr`, and help text to `stdout`.
 ## TODO
 
 * support `--var=42` argument style
-* rename overlapping things, e.g. `KYAA_FLAG` vs `kyaa_flag`, `KYAA_FLAG_ARG` vs `kyaa_flag_arg`, etc.
-* replace `strtol` with something more user-friendly (thereby don't require `stdlib.h` or `errno.h`)
+* fix overlapping names, e.g. `KYAA_FLAG` vs `kyaa_flag`, `KYAA_FLAG_ARG` vs `kyaa_flag_arg`, etc.
+* replace `strtol` with something more user-friendly (removes `stdlib.h` and `errno.h` requirements)
 * move `KYAA_FLAG_LONG` to `kyaa_extend.h` or something; write similar macros.
+* maybe pass `argc`/`argv` manually?
