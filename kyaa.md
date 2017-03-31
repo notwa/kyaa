@@ -7,13 +7,11 @@ super hacky macro hacks for parsing arguments in C.
 C99 or greater.
 
 standard library headers:
-* `errno.h`
 * `stdbool.h`
 * `stdio.h`
-* `stdlib.h`
 * `string.h`
 
-## tutorial/API
+## tutorial
 
 ensure `argc` and `argv` are defined.
 kyaa doesn't actually care if it's in `main` or not.
@@ -23,7 +21,7 @@ iterate over the arguments with `KYAA_LOOP`:
 ```c
 int main(int argc, char *argv[]) {
     KYAA_LOOP {
-        // i, kyaa_name, kyaa_read_stdin, and kyaa_flag are exposed here.
+        // KYAA_ITER, kyaa_name, kyaa_read_stdin, and kyaa_flag are exposed here.
         // [other code goes here]
     }
     return 0;
@@ -115,6 +113,42 @@ kyaa prints error messages to `stderr`, and help text to `stdout`.
 
 * support `--var=42` argument style
 * fix overlapping names, e.g. `KYAA_FLAG` vs `kyaa_flag`, `KYAA_FLAG_ARG` vs `kyaa_flag_arg`, etc.
-* replace `strtol` with something more user-friendly (removes `stdlib.h` and `errno.h` requirements)
-* move `KYAA_FLAG_LONG` to `kyaa_extend.h` or something; write similar macros.
 * maybe pass `argc`/`argv` manually?
+
+## API
+
+### kyaa.h
+
+```
+KYAA_OKAY       DEFINE int
+KYAA_ERROR      DEFINE int
+KYAA_ITER       DEFINE int
+KYAA_SETUP      MACRO
+KYAA_LOOP       MACRO
+KYAA_BEGIN      MACRO
+KYAA_END        MACRO
+KYAA_DESCRIBE   MACRO
+KYAA_FLAG       MACRO
+KYAA_FLAG_ARG   MACRO
+KYAA_HELP       MACRO
+
+kyaa_name           char *
+kyaa_read_stdin     bool
+kyaa_flag           char
+kyaa_keep_parsing   bool
+kyaa_parse_next     bool
+kyaa_arg            char *
+kyaa_no_more        bool
+kyaa_helping        bool
+kyaa_any            bool
+kyaa_flag_arg       char *
+```
+
+### kyaa\_extra.h
+
+```
+KYAA_FLAG_LONG  MACRO
+
+char        *kyaa_skip_spaces(char *str)
+const char  *kyaa_str_to_long(char *str, long *p_out)
+```
