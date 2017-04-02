@@ -1,3 +1,8 @@
+/* kyaa_extra.h - extensions to kyaa for parsing arguments.
+    This is free and unencumbered software released into the public domain.
+    Refer to kyaa.md for documentation.
+*/
+
 static char *kyaa_skip_spaces(char *str) {
     /* iterates str to first non-space character according to the C locale */
     while (*str != '\0') {
