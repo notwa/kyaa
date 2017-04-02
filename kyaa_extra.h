@@ -17,8 +17,7 @@ static char *kyaa_skip_spaces(char *str) {
 static const char *kyaa__base_2(char **p_str, long *p_out) {
     char *str = *p_str;
     long out = *p_out;
-    char c;
-    while ((c = *str++) != '\0') {
+    for (char c; (c = *str) != '\0'; str++) {
         switch (c) {
         case '0': case '1': {
             long digit = (long)(c - '0');
@@ -46,8 +45,7 @@ exit:
 static const char *kyaa__base_8(char **p_str, long *p_out) {
     char *str = *p_str;
     long out = *p_out;
-    char c;
-    while ((c = *str++) != '\0') {
+    for (char c; (c = *str) != '\0'; str++) {
         switch (c) {
         case '0': case '1': case '2': case '3':
         case '4': case '5': case '6': case '7': {
@@ -75,8 +73,7 @@ exit:
 static const char *kyaa__base_10(char **p_str, long *p_out) {
     char *str = *p_str;
     long out = *p_out;
-    char c;
-    while ((c = *str++) != '\0') {
+    for (char c; (c = *str) != '\0'; str++) {
         switch (c) {
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': {
@@ -103,8 +100,7 @@ exit:
 static const char *kyaa__base_16(char **p_str, long *p_out) {
     char *str = *p_str;
     long out = *p_out;
-    char c;
-    while ((c = *str++) != '\0') {
+    for (char c; (c = *str) != '\0'; str++) {
         switch (c) {
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': {
@@ -177,7 +173,8 @@ static const char *kyaa_str_to_long(char *str, long *p_out) {
 
     if (*str == '\0') return "no number given";
 
-    // TODO: comment on how we go towards negatives instead of positives
+    // NOTE: we actually subtract each digit from the result instead of summing.
+    //       this lets us represent LONG_MIN without overflowing.
     const char *err;
     switch (base) {
         case  2: { err = kyaa__base_2( &str, &out); } break;
@@ -191,6 +188,7 @@ static const char *kyaa_str_to_long(char *str, long *p_out) {
     str = kyaa_skip_spaces(str);
     if (*str != '\0') return "unexpected character";
 
+    // NOTE: out is negative here; see above comment.
     // assuming two's complement
     if (!negated && out == LONG_MIN) return "out of range for long integer";
     *p_out = negated ? out : -out;

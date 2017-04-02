@@ -11,6 +11,9 @@ standard library headers:
 * `stdio.h`
 * `string.h`
 
+in addition, `kyaa_extra.h` requires `limits.h`,
+or at least `LONG_MIN` to be defined.
+
 ## tutorial
 
 ensure `argc` and `argv` are defined.
@@ -119,36 +122,39 @@ kyaa prints error messages to `stderr`, and help text to `stdout`.
 
 ### kyaa.h
 
-```
-KYAA_OKAY       DEFINE int
-KYAA_ERROR      DEFINE int
-KYAA_ITER       DEFINE int
-KYAA_SETUP      MACRO
-KYAA_LOOP       MACRO
-KYAA_BEGIN      MACRO
-KYAA_END        MACRO
-KYAA_DESCRIBE   MACRO
-KYAA_FLAG       MACRO
-KYAA_FLAG_ARG   MACRO
-KYAA_HELP       MACRO
-
-kyaa_name           char *
-kyaa_read_stdin     bool
-kyaa_flag           char
-kyaa_keep_parsing   bool
-kyaa_parse_next     bool
-kyaa_arg            char *
-kyaa_no_more        bool
-kyaa_helping        bool
-kyaa_any            bool
-kyaa_flag_arg       char *
-```
+return type or type | name | arguments or default value
+--- | --- | ---
+define          | KYAA\_OKAY            | 0
+define          | KYAA\_ERROR           | 1
+define          | KYAA\_ITER            | i
+||
+macro           | KYAA\_SETUP           | *none*
+macro           | KYAA\_LOOP            | *none*
+macro           | KYAA\_BEGIN           | *none*
+macro           | KYAA\_END             | *none*
+macro           | KYAA\_DESCRIBE        | c, name, description
+macro           | KYAA\_FLAG            | c, name, description
+macro           | KYAA\_FLAG\_ARG       | c, name, description
+macro           | KYAA\_HELP            | description
+||
+`char *`        | kyaa\_name            | *n/a*
+`bool`          | kyaa\_read\_stdin     | *n/a*
+`char *`        | kyaa\_arg             | *n/a*
+|| **internal use** ||
+`char`          | kyaa\_flag            | *n/a*
+`bool`          | kyaa\_keep\_parsing   | *n/a*
+`bool`          | kyaa\_parse\_next     | *n/a*
+`bool`          | kyaa\_no\_more        | *n/a*
+`bool`          | kyaa\_helping         | *n/a*
+`bool`          | kyaa\_any             | *n/a*
 
 ### kyaa\_extra.h
 
-```
-KYAA_FLAG_LONG  MACRO
-
-char        *kyaa_skip_spaces(char *str)
-const char  *kyaa_str_to_long(char *str, long *p_out)
-```
+return value or type | name | arguments or default value
+--- | --- | ---
+macro           | KYAA\_FLAG\_LONG      | c, name, description
+||
+`char *`        | kyaa\_flag\_arg       | *n/a*
+||
+`char *`        | kyaa\_skip\_spaces    | `char *` str
+`const char *`  | kyaa\_str\_to\_long   | `char *` str, `long *` p\_out
