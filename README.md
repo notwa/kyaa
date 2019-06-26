@@ -42,6 +42,8 @@ the prerequisites are:
 
 * `limits.h` (just for `kyaa_extra.h`, can be avoided by defining `LONG_MIN`)
 
+kyaa does not allocate any memory on heap.
+
 ## tutorial
 
 ensure `argc` and `argv` are defined in a function that returns an `int`.
