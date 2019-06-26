@@ -24,7 +24,7 @@ iterate over the arguments with `KYAA_LOOP`:
 ```c
 int main(int argc, char **argv) {
     KYAA_LOOP {
-        // kyaa_iter, kyaa_name, kyaa_read_stdin, and kyaa_flag are exposed here.
+        // kyaa_iter, kyaa_name, and kyaa_read_stdin are exposed here.
         // [other code goes here]
     }
     return 0;
@@ -78,8 +78,10 @@ and `KYAA_FLAG_ARG` or `KYAA_FLAG_LONG` for flags that do:
     return 0;
 ```
 
+**dirty details:**
 kyaa secretly wraps flag handling in if/else statements with {} blocks.
 do not confuse it for a switch/case method.
+kyaa uses `continue` to handle certain arguments.
 
 kyaa handles `-h` and `--help` for printing help text.
 additional help text may be defined using `KYAA_HELP`:
@@ -97,7 +99,7 @@ additional help text may be defined using `KYAA_HELP`:
 ```
 
 kyaa interprets an argument of `-` as a request to enable reading from stdin:
-`kyaa_read_stdin` is set to true.
+`kyaa_read_stdin` is set to true. this may be reset by the user if desired.
 
 flag values may be specified in four ways; the following are equivalent:
 * `-v42`
@@ -108,7 +110,6 @@ flag values may be specified in four ways; the following are equivalent:
 kyaa returns `KYAA_OKAY` when `-h` or `--help` is given,
 or `KYAA_FAIL` in the event of invalid flags, missing arguments,
 or invalid numbers (`KYAA_FLAG_LONG`).
-kyaa uses `continue` for handling arguments.
 
 kyaa prints help text to `stdout` and error messages to `stderr`.
 this can be overridden by specifying `KYAA_OUT` and `KYAA_ERR` respectively.
@@ -138,7 +139,7 @@ macro           | KYAA\_HELP            | description                       | pr
 `const char *`  | kyaa\_arg             | *n/a*                             | the whole argument being parsed
 `const char *`  | kyaa\_etc             | *n/a*                             | an argument to a flag, or `NULL`
 `bool`          | kyaa\_read\_stdin     | *n/a*                             | set when an argument is `-` (remains set unless reset by user)
-||| **the following entries are for internal use and may be changed without notice**
+||| **the following entries are for internal use**
 macro           | KYAA\_IS\_LONG        | arg, name                         | tests whether `arg` describes a long flag called `name`
 `char`          | kyaa\_char            | *n/a*                             | the character assigned to the current flag being parsed
 `bool`          | kyaa\_parsing         | *n/a*                             | whether parsing occurs (`--` cancels parsing)
