@@ -2,21 +2,49 @@
 
 super hacky macro hacks for parsing arguments in C.
 
-## prerequisites
+## FAQ
 
-C99 or greater.
+*Fairly Arbitrary Questions*
 
-standard library headers:
+### Why?
+
+kyaa exists for when the "quick 'n' dirty" isn't dirty enough.
+also, it keeps argument parsing *in* main,
+instead of delegating with callbacks and whatnot.
+
+### How?
+
+kyaa secretly wraps flag-handling in if-else statements with curly braces.
+it's not a switch-case method!
+kyaa instead uses `continue` to handle certain arguments.
+
+### Should I use this?
+
+honestly, no.
+
+### What's in a name?
+
+i have no idea why i called it "kyaa,"
+other than it being the first thing that came to mind
+that wasn't already in use by some other software.
+
+### What do I need?
+
+the prerequisites are:
+
+* C99 (or greater)
+
 * `stdbool.h`
-* `stdio.h`
+
+* `stdio.h` (can be avoided by overriding `KYAA_OUT` and `KYAA_ERR`)
+
 * `string.h`
 
-in addition, `kyaa_extra.h` requires `limits.h`,
-or at least `LONG_MIN` to be defined.
+* `limits.h` (just for `kyaa_extra.h`, can be avoided by defining `LONG_MIN`)
 
 ## tutorial
 
-ensure `argc` and `argv` are defined.
+ensure `argc` and `argv` are defined in a function that returns an `int`.
 kyaa doesn't actually care if it's in `main` or not.
 
 iterate over the arguments with `KYAA_LOOP`:
@@ -77,11 +105,6 @@ and `KYAA_FLAG_ARG` or `KYAA_FLAG_LONG` for flags that do:
     }
     return 0;
 ```
-
-**dirty details:**
-kyaa secretly wraps flag handling in if/else statements with {} blocks.
-do not confuse it for a switch/case method.
-kyaa uses `continue` to handle certain arguments.
 
 kyaa handles `-h` and `--help` for printing help text.
 additional help text may be defined using `KYAA_HELP`:
