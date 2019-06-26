@@ -1,6 +1,6 @@
 /* kyaa_extra.h - extensions to kyaa for parsing arguments.
     This is free and unencumbered software released into the public domain.
-    Refer to kyaa.md for documentation.
+    For more information, please refer to <http://unlicense.org>
 */
 
 #ifndef KYAA_EXTRA
