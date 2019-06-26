@@ -1,0 +1,36 @@
+#!/usr/bin/sh
+
+set -e
+
+CC=${CC:-gcc}
+
+# ensure all tests are queued to run.
+awk '
+/^TEST/ {
+    match($0, /[a-z0-9_]+/)
+    key = substr($0, RSTART, RLENGTH)
+    seen[key] = or(seen[key], 1)
+}
+/RUN_TEST/ {
+    match($0, /[a-z0-9][a-z0-9_]*/)
+    key = substr($0, RSTART, RLENGTH)
+    seen[key] = or(seen[key], 2)
+}
+END {
+    result = 0
+    for (key in seen) {
+        if (seen[key] == 1) {
+            print "defined but never tested: " key
+            result = or(result, 1)
+        } else if (seen[key] == 2) {
+            print "tested but never defined: " key
+            result = or(result, 1)
+        }
+    }
+    exit(result)
+}
+' test.c
+
+$CC -std=c99 -Wall -Wextra -Wno-unused -Werror $CFLAGS test_subject.c -o test_subject
+$CC -std=c99 -Wall -Wextra -Wno-unused -Werror $CFLAGS test.c -o test
+./test

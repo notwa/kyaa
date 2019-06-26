@@ -22,9 +22,9 @@ kyaa doesn't actually care if it's in `main` or not.
 iterate over the arguments with `KYAA_LOOP`:
 
 ```c
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
     KYAA_LOOP {
-        // KYAA_ITER, kyaa_name, kyaa_read_stdin, and kyaa_flag are exposed here.
+        // kyaa_iter, kyaa_name, kyaa_read_stdin, and kyaa_flag are exposed here.
         // [other code goes here]
     }
     return 0;
@@ -50,31 +50,32 @@ and `KYAA_FLAG_ARG` or `KYAA_FLAG_LONG` for flags that do:
 
 ```c
     bool use_feature = false;
-    char *log_fn = "logs.txt";
+    const char *log_fn = "log.txt";
     long my_var = 0;
     KYAA_LOOP {
         // [other code goes here]
         KYAA_BEGIN
 
         // arguments: short flag, long flag, help description
-        KYAA_FLAG("-x", "--enable-feature",
+        KYAA_FLAG('x', "enable-feature",
 "        enable some feature")
             use_feature = true;
 
         // same arguments, but kyaa_etc contains the relevant string.
-        KYAA_FLAG_ARG("-l", "--log-file",
+        KYAA_FLAG_ARG('l', "log-file",
 "        use a given filename for the log file")
             log_fn = kyaa_etc;
 
-        // same arguments, kyaa_etc is set, but kyaa_flag_arg is also set.
-        KYAA_FLAG_LONG("-v", "--var",
+        // same arguments, kyaa_etc is set, but kyaa_long_value is also set.
+        KYAA_FLAG_LONG('v', "var",
 "        set an integer variable\n"
 "        default: 0")
-            my_var = kyaa_flag_arg;
+            my_var = kyaa_long_value;
 
         KYAA_END
         // [other code goes here]
     }
+    return 0;
 ```
 
 kyaa secretly wraps flag handling in if/else statements with {} blocks.
@@ -98,55 +99,53 @@ additional help text may be defined using `KYAA_HELP`:
 kyaa interprets an argument of `-` as a request to enable reading from stdin:
 `kyaa_read_stdin` is set to true.
 
-arguments may be passed in three ways, consider:
+flag values may be specified in four ways; the following are equivalent:
 * `-v42`
 * `-v 42`
 * `--var 42`
+* `--var=42`
 
 kyaa returns `KYAA_OKAY` when `-h` or `--help` is given,
-and `KYAA_ERROR` in the event of invalid flags, missing arguments,
+or `KYAA_FAIL` in the event of invalid flags, missing arguments,
 or invalid numbers (`KYAA_FLAG_LONG`).
 kyaa uses `continue` for handling arguments.
 
-kyaa prints error messages to `stderr`, and help text to `stdout`.
-
-`KYAA_ITER` may be redefined to avoid name collisions.
-
-## TODO
-
-* support `--var=42` argument style
-* fix overlapping names, e.g. `KYAA_FLAG` vs `kyaa_flag`, `KYAA_FLAG_ARG` vs `kyaa_flag_arg`, etc.
-* maybe pass `argc`/`argv` manually?
+kyaa prints help text to `stdout` and error messages to `stderr`.
+this can be overridden by specifying `KYAA_OUT` and `KYAA_ERR` respectively.
 
 ## API
 
 ### kyaa.h
 
-return type or type | name | arguments or default value
---- | --- | ---
-define          | KYAA\_OKAY            | 0
-define          | KYAA\_ERROR           | 1
-define          | KYAA\_ITER            | i
-||
-macro           | KYAA\_SETUP           | *none*
-macro           | KYAA\_LOOP            | *none*
-macro           | KYAA\_BEGIN           | *none*
-macro           | KYAA\_END             | *none*
-macro           | KYAA\_DESCRIBE        | c, name, description
-macro           | KYAA\_FLAG            | c, name, description
-macro           | KYAA\_FLAG\_ARG       | c, name, description
-macro           | KYAA\_HELP            | description
-||
-`char *`        | kyaa\_name            | *n/a*
-`bool`          | kyaa\_read\_stdin     | *n/a*
-`char *`        | kyaa\_arg             | *n/a*
-|| **internal use** ||
-`char`          | kyaa\_flag            | *n/a*
-`bool`          | kyaa\_keep\_parsing   | *n/a*
-`bool`          | kyaa\_parse\_next     | *n/a*
-`bool`          | kyaa\_no\_more        | *n/a*
-`bool`          | kyaa\_helping         | *n/a*
-`bool`          | kyaa\_any             | *n/a*
+return type or type | name | arguments or default value | description
+--- | --- | --- | ---
+define          | KYAA\_OKAY            | 0                                 | value to return upon a successful early exit
+define          | KYAA\_FAIL            | 1                                 | value to return upon encountering an error
+define          | KYAA\_OUT             | printf(__VA_ARGS__)               | printf-like function for help text
+define          | KYAA\_ERR             | fprintf(stderr, __VA_ARGS__)      | printf-like function for error text
+|||
+macro           | KYAA\_SETUP           | *none*                            | performs a sanity check and initializes variables
+macro           | KYAA\_LOOP            | *none*                            | begins iterating over arguments
+macro           | KYAA\_BEGIN           | *none*                            | begins parsing arguments
+macro           | KYAA\_END             | *none*                            | finishes parsing arguments
+macro           | KYAA\_DESCRIBE        | c, name, description              | describes a flag for help text
+macro           | KYAA\_FLAG            | c, name, description              | handles a flag that takes no arguments
+macro           | KYAA\_FLAG\_ARG       | c, name, description              | handles a flag that takes a string argument
+macro           | KYAA\_HELP            | description                       | prints additional text for help text
+|||
+`const char *`  | kyaa\_name            | *n/a*                             | the name of the program (usually `argv[0]`)
+`int`           | kyaa\_iter            | *n/a*                             | the index of the argument being parsed
+`const char *`  | kyaa\_arg             | *n/a*                             | the whole argument being parsed
+`const char *`  | kyaa\_etc             | *n/a*                             | an argument to a flag, or `NULL`
+`bool`          | kyaa\_read\_stdin     | *n/a*                             | set when an argument is `-` (remains set unless reset by user)
+||| **the following entries are for internal use and may be changed without notice**
+macro           | KYAA\_IS\_LONG        | arg, name                         | tests whether `arg` describes a long flag called `name`
+`char`          | kyaa\_char            | *n/a*                             | the character assigned to the current flag being parsed
+`bool`          | kyaa\_parsing         | *n/a*                             | whether parsing occurs (`--` cancels parsing)
+`bool`          | kyaa\_skip            | *n/a*                             | set when a flag needs another argument
+`bool`          | kyaa\_helping         | *n/a*                             | set when `-h` or `--help` is encountered
+`bool`          | kyaa\_any             | *n/a*                             | set when any flag has been matched
+`const char *`  | kyaa\_equals          | *n/a*                             | a pointer to the first `=` character in a long flag, or `NULL`
 
 ### kyaa\_extra.h
 
