@@ -4,6 +4,9 @@ set -e
 
 CC=${CC:-gcc}
 
+TEST_DIR="$(readlink -f "$(dirname "$0")")"
+cd "$TEST_DIR"
+
 # ensure all tests are queued to run.
 awk '
 /^TEST/ {
@@ -31,6 +34,6 @@ END {
 }
 ' test.c
 
-$CC -std=c99 -Wall -Wextra -Wno-unused -Werror $CFLAGS test_subject.c -o test_subject
-$CC -std=c99 -Wall -Wextra -Wno-unused -Werror $CFLAGS test.c -o test
+$CC -std=c99 -I.. -Wall -Wextra -Wno-unused -Werror $CFLAGS test_subject.c -o test_subject
+$CC -std=c99 -I.. -Wall -Wextra -Wno-unused -Werror $CFLAGS test.c -o test
 ./test
